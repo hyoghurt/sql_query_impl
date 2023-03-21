@@ -1,5 +1,7 @@
 package com.digdes.school.type;
 
+import java.util.Objects;
+
 public class BooleanType implements Type, Cloneable {
     private Boolean value;
 
@@ -26,5 +28,18 @@ public class BooleanType implements Type, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BooleanType that = (BooleanType) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

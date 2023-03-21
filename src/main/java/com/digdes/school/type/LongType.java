@@ -1,5 +1,9 @@
 package com.digdes.school.type;
 
+import com.digdes.school.exceptions.TypeErrorException;
+
+import java.util.Objects;
+
 public class LongType implements Type, Cloneable {
     private Long value;
 
@@ -9,7 +13,11 @@ public class LongType implements Type, Cloneable {
 
     @Override
     public void setValue(String value) {
-        this.value = Long.parseLong(value);
+        try {
+            this.value = Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new TypeErrorException("string to long: " + value);
+        }
     }
 
     @Override
@@ -27,5 +35,18 @@ public class LongType implements Type, Cloneable {
     @Override
     public String toString() {
         return String.valueOf(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LongType longType = (LongType) o;
+        return Objects.equals(value, longType.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

@@ -1,15 +1,16 @@
 package com.digdes.school;
 
+import com.digdes.school.enums.Statement;
+import com.digdes.school.exceptions.SyntaxErrorException;
 import com.digdes.school.parser.Parser;
-import com.digdes.school.table.*;
-import com.digdes.school.table.cell.Cell;
-import com.digdes.school.table.cell.TableCellImpl;
-import com.digdes.school.type.BooleanType;
-import com.digdes.school.type.DoubleType;
-import com.digdes.school.type.LongType;
-import com.digdes.school.type.StringType;
+import com.digdes.school.table.Table;
+import com.digdes.school.table.cell.TableImpl;
+import com.digdes.school.type.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JavaSchoolStarter {
     private final List<Map<String, Object>> list = new ArrayList<>();
@@ -27,27 +28,39 @@ public class JavaSchoolStarter {
 //
 //        this.table = new Table(map);
 
-        Map<String, Cell> map = new HashMap<>();
+        table = createTable();
+    }
 
-        map.put("id", new Cell(new LongType()));
-        map.put("lastName", new Cell(new StringType()));
-        map.put("age", new Cell(new LongType()));
-        map.put("cost", new Cell(new DoubleType()));
-        map.put("active", new Cell(new BooleanType()));
+    private Table createTable() {
+        Map<String, Type> map = new HashMap<>();
 
-        this.table = new TableCellImpl(map);
+        map.put("id", new LongType());
+        map.put("lastName", new StringType());
+        map.put("age", new LongType());
+        map.put("cost", new DoubleType());
+        map.put("active", new BooleanType());
+
+        return new TableImpl(map);
     }
 
     public List<Map<String, Object>> execute(String query) {
         parser.parse(query);
+
+        Statement statement = parser.getStatement();
         Map<String, String> values = parser.getValues();
+        List<Condition> conditions = parser.getConditions();
 
-        System.out.println(values);
-
-        table.insert(values);
-
-        System.out.println(table);
-        //TODO validate
+        if (statement == Statement.INSERT) {
+            if (values == null || values.isEmpty()) {
+                throw new SyntaxErrorException("not values");
+            }
+            if (conditions != null) {
+                throw new SyntaxErrorException("not values");
+            }
+            return table.insert(values);
+        } else if (statement == Statement.SELECT) {
+            return table.select(conditions);
+        }
 
         return null;
     }

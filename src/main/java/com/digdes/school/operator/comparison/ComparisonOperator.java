@@ -11,13 +11,25 @@ public enum ComparisonOperator {
     ILIKE("ILIKE"),
     ;
 
-    private final String operator;
+    private final String symbol;
 
-    ComparisonOperator(String operator) {
-        this.operator = operator;
+    ComparisonOperator(String symbol) {
+        this.symbol = symbol;
     }
 
-    public String getOperator() {
-        return operator;
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public ComparisonOperator getFromSymbol(String symbol) {
+        ComparisonOperator[] values = ComparisonOperator.values();
+
+        for (ComparisonOperator value : values) {
+            if (value.getSymbol().equalsIgnoreCase(symbol)) {
+                return value;
+            }
+        }
+
+        return null;
     }
 }

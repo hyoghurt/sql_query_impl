@@ -1,4 +1,4 @@
-package com.digdes.school.parser;
+package com.digdes.school.parser.find;
 
 public class FindString extends FindBase {
     private final Character STRING_WRAPPER = '\'';

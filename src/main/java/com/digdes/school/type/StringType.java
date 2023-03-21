@@ -1,5 +1,9 @@
 package com.digdes.school.type;
 
+import com.digdes.school.exceptions.TypeErrorException;
+
+import java.util.Objects;
+
 public class StringType implements Type, Cloneable {
     private String value;
 
@@ -9,7 +13,10 @@ public class StringType implements Type, Cloneable {
 
     @Override
     public void setValue(String value) {
-        this.value = value;
+        if (value.length() < 2 || !value.startsWith("'") || !value.endsWith("'")) {
+            throw new TypeErrorException("value no string: " + value);
+        }
+        this.value = value.substring(1, value.length() - 1);
     }
 
     @Override
@@ -26,5 +33,18 @@ public class StringType implements Type, Cloneable {
     @Override
     public String toString() {
         return String.valueOf(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StringType that = (StringType) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

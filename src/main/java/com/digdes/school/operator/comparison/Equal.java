@@ -1,16 +1,16 @@
 package com.digdes.school.operator.comparison;
 
-import java.util.function.BiPredicate;
+public class Equal<T, U> extends ComparisonOperatorBase<T, U> {
 
-public class Equal<T, U> implements BiPredicate<T, U> {
-    private final String symbol = "=";
-
-    public String getSymbol() {
-        return symbol;
+    public Equal() {
+        super(ComparisonOperator.EQUAL);
     }
 
     @Override
     public boolean test(T t, U u) {
+        if (t == null || u == null) {
+            return false;
+        }
         if (t.getClass() != u.getClass()) {
             return false;
         }

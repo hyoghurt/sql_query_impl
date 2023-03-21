@@ -1,4 +1,4 @@
-package com.digdes.school.parser;
+package com.digdes.school.parser.find;
 
 public class FindAssignment extends FindBase {
     private final char ASSIGNMENT_SYMBOL = '=';

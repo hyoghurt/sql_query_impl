@@ -1,6 +1,6 @@
-package com.digdes.school.parser;
+package com.digdes.school.parser.find;
 
-public class FindStatement extends FindBase {
+public class FindWordWrapperSpace extends FindBase {
 
     @Override
     public int[] apply(String s, Integer i) {
@@ -12,7 +12,7 @@ public class FindStatement extends FindBase {
         int end = s.indexOf(SPACE, start);
 
         if (end == -1) {
-            return new int[] {i, i};
+            return new int[] {i, s.length()};
         }
 
         return new int[] {start, end};

@@ -1,6 +1,6 @@
-package com.digdes.school.parser;
+package com.digdes.school.parser.find;
 
-public abstract class FindBase implements FindBaseI {
+public abstract class FindBase implements FindBaseInterface {
     final Character SPACE = ' ';
 
     @Override
