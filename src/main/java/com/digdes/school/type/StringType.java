@@ -1,5 +1,6 @@
 package com.digdes.school.type;
 
+import com.digdes.school.exceptions.SyntaxErrorException;
 import com.digdes.school.exceptions.TypeErrorException;
 
 import java.util.Objects;
@@ -14,7 +15,7 @@ public class StringType implements Type, Cloneable {
     @Override
     public void setValue(String value) {
         if (value.length() < 2 || !value.startsWith("'") || !value.endsWith("'")) {
-            throw new TypeErrorException("value no string: " + value);
+            throw new SyntaxErrorException("fail value to string: " + value);
         }
         this.value = value.substring(1, value.length() - 1);
     }

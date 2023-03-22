@@ -1,5 +1,7 @@
 package com.digdes.school.type;
 
+import com.digdes.school.exceptions.SyntaxErrorException;
+
 import java.util.Objects;
 
 public class BooleanType implements Type, Cloneable {
@@ -11,12 +13,15 @@ public class BooleanType implements Type, Cloneable {
 
     @Override
     public void setValue(String value) {
-        this.value = Boolean.parseBoolean(value);
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(value);
+        if (value != null) {
+            if (value.equals("true")) {
+                this.value = true;
+            } else if (value.equals("false")) {
+                this.value = false;
+            } else {
+                throw new SyntaxErrorException("fail value to boolean: " + value);
+            }
+        }
     }
 
     @Override
@@ -28,6 +33,11 @@ public class BooleanType implements Type, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
     @Override

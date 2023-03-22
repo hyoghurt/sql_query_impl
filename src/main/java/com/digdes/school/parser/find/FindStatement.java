@@ -1,6 +1,6 @@
 package com.digdes.school.parser.find;
 
-public class FindWordWrapperSpace extends FindBase {
+public class FindStatement extends Find {
 
     @Override
     public int[] apply(String s, Integer i) {

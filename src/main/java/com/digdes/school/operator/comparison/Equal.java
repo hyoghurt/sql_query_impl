@@ -1,6 +1,8 @@
 package com.digdes.school.operator.comparison;
 
-public class Equal<T, U> extends ComparisonOperatorBase<T, U> {
+import com.digdes.school.type.Type;
+
+public class Equal<T extends Type, U extends Type> extends ComparisonOperatorBase<T, U> {
 
     public Equal() {
         super(ComparisonOperator.EQUAL);
@@ -8,13 +10,17 @@ public class Equal<T, U> extends ComparisonOperatorBase<T, U> {
 
     @Override
     public boolean test(T t, U u) {
-        if (t == null || u == null) {
+        if (t.getValue() == null || u.getValue() == null) {
             return false;
         }
-        if (t.getClass() != u.getClass()) {
+        if (t.getValue().getClass() != u.getValue().getClass()) {
             return false;
         }
         return t.equals(u);
+    }
+
+    @Override
+    public void validateType(T t, U u) {
     }
 }
 

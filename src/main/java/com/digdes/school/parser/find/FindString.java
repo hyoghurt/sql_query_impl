@@ -1,7 +1,6 @@
 package com.digdes.school.parser.find;
 
-public class FindString extends FindBase {
-    private final Character STRING_WRAPPER = '\'';
+public class FindString extends Find {
 
     @Override
     public int[] apply(String s, Integer i) {

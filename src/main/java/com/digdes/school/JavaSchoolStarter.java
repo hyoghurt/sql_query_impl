@@ -3,31 +3,22 @@ package com.digdes.school;
 import com.digdes.school.enums.Statement;
 import com.digdes.school.exceptions.SyntaxErrorException;
 import com.digdes.school.parser.Parser;
+import com.digdes.school.parser.StringToTypeConverter;
+import com.digdes.school.table.Condition;
 import com.digdes.school.table.Table;
 import com.digdes.school.table.cell.TableImpl;
 import com.digdes.school.type.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class JavaSchoolStarter {
-    private final List<Map<String, Object>> list = new ArrayList<>();
+    private final StringToTypeConverter stringToTypeConverter = new StringToTypeConverter();
     private final Parser parser = new Parser();
     private final Table table;
 
     public JavaSchoolStarter() {
-//        Map<String, Column<?>> map = new HashMap<>();
-//
-//        map.put("id", new Column<Long>(Long.class));
-//        map.put("lastName", new Column<String>(String.class));
-//        map.put("age", new Column<Long>(Long.class));
-//        map.put("cost", new Column<Double>(Double.class));
-//        map.put("active", new Column<Boolean>(Boolean.class));
-//
-//        this.table = new Table(map);
-
         table = createTable();
     }
 
@@ -50,15 +41,22 @@ public class JavaSchoolStarter {
         Map<String, String> values = parser.getValues();
         List<Condition> conditions = parser.getConditions();
 
+        if (conditions != null) {
+            conditions.forEach(condition -> condition.setType(stringToTypeConverter.convert(condition.getValue())));
+        }
+
         if (statement == Statement.INSERT) {
             if (values == null || values.isEmpty()) {
                 throw new SyntaxErrorException("not values");
             }
             if (conditions != null) {
-                throw new SyntaxErrorException("not values");
+                throw new SyntaxErrorException("insert with conditions");
             }
             return table.insert(values);
         } else if (statement == Statement.SELECT) {
+            if (values != null) {
+                throw new SyntaxErrorException("select with values");
+            }
             return table.select(conditions);
         }
 

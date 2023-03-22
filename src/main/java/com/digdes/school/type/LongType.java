@@ -1,10 +1,11 @@
 package com.digdes.school.type;
 
+import com.digdes.school.exceptions.SyntaxErrorException;
 import com.digdes.school.exceptions.TypeErrorException;
 
 import java.util.Objects;
 
-public class LongType implements Type, Cloneable {
+public class LongType implements NumberType, Cloneable {
     private Long value;
 
     public Long getValue() {
@@ -16,7 +17,7 @@ public class LongType implements Type, Cloneable {
         try {
             this.value = Long.parseLong(value);
         } catch (NumberFormatException e) {
-            throw new TypeErrorException("string to long: " + value);
+            throw new SyntaxErrorException("fail value to long: " + value);
         }
     }
 
@@ -30,7 +31,6 @@ public class LongType implements Type, Cloneable {
             throw new AssertionError();
         }
     }
-
 
     @Override
     public String toString() {
@@ -48,5 +48,14 @@ public class LongType implements Type, Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public int compareTo(NumberType type) {
+        Object typeObject = type.getValue();
+        if (typeObject instanceof Double) {
+            return value.compareTo((long) (double) type.getValue());
+        }
+        return value.compareTo((long) type.getValue());
     }
 }

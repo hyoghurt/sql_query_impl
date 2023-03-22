@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FindComparisonOperator extends FindBase {
+public class FindComparisonOperator extends Find {
     private final ComparisonOperator[] operators = ComparisonOperator.values();
 
     @Override
@@ -16,14 +16,20 @@ public class FindComparisonOperator extends FindBase {
                 .sorted((a,b) -> b.length() - a.length())
                 .collect(Collectors.toList());
 
-        s = s.toUpperCase();
+        String finalS = s.toUpperCase();
 
-        for (String symbol : symbols) {
-            if (s.startsWith(symbol, i)) {
-                return new int[] {i, i + symbol.length()};
-            }
-        }
+        return symbols.stream()
+                .filter(symbol -> finalS.startsWith(symbol, i))
+                .map(symbol -> new int[] {i, i + symbol.length()})
+                .findFirst()
+                .orElse(new int[] {i, i});
 
-        return new int[] {i, i};
+//        for (String symbol : symbols) {
+//            if (s.startsWith(symbol, i)) {
+//                return new int[] {i, i + symbol.length()};
+//            }
+//        }
+//
+//        return new int[] {i, i};
     }
 }

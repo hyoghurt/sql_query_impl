@@ -1,14 +1,22 @@
-package com.digdes.school;
+package com.digdes.school.table;
 
+import com.digdes.school.operator.comparison.ComparisonOperatorInterface;
 import com.digdes.school.type.Type;
-
-import java.util.function.BiPredicate;
 
 public class Condition {
     private String key;
     private String value;
     private Type type;
-    private BiPredicate operator;
+    private String operatorSymbol;
+    private ComparisonOperatorInterface<Type, Type> operator;
+
+    public String getOperatorSymbol() {
+        return operatorSymbol;
+    }
+
+    public void setOperatorSymbol(String operatorSymbol) {
+        this.operatorSymbol = operatorSymbol;
+    }
 
     public String getKey() {
         return key;
@@ -34,11 +42,11 @@ public class Condition {
         this.type = type;
     }
 
-    public BiPredicate getOperator() {
+    public ComparisonOperatorInterface<Type, Type> getOperator() {
         return operator;
     }
 
-    public void setOperator(BiPredicate operator) {
+    public void setOperator(ComparisonOperatorInterface<Type, Type> operator) {
         this.operator = operator;
     }
 }

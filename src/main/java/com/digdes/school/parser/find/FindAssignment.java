@@ -1,8 +1,6 @@
 package com.digdes.school.parser.find;
 
-public class FindAssignment extends FindBase {
-    private final char ASSIGNMENT_SYMBOL = '=';
-
+public class FindAssignment extends Find {
 
     @Override
     public int[] apply(String s, Integer i) {

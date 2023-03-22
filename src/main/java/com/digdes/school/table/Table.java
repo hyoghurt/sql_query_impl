@@ -1,6 +1,5 @@
 package com.digdes.school.table;
 
-import com.digdes.school.Condition;
 import com.digdes.school.operator.logical.LogicalOperator;
 
 import java.util.List;

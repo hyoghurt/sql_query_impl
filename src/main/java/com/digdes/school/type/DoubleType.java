@@ -1,8 +1,11 @@
 package com.digdes.school.type;
 
+import com.digdes.school.exceptions.SyntaxErrorException;
+import com.digdes.school.exceptions.TypeErrorException;
+
 import java.util.Objects;
 
-public class DoubleType implements Type, Cloneable {
+public class DoubleType implements NumberType, Cloneable {
     private Double value;
 
     public Double getValue() {
@@ -11,7 +14,11 @@ public class DoubleType implements Type, Cloneable {
 
     @Override
     public void setValue(String value) {
-        this.value = Double.parseDouble(value);
+        try {
+            this.value = Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            throw new SyntaxErrorException("fail value to double: " + value);
+        }
     }
 
     @Override
@@ -41,5 +48,14 @@ public class DoubleType implements Type, Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public int compareTo(NumberType type) {
+        Object typeObject = type.getValue();
+        if (typeObject instanceof Long) {
+            return value.compareTo((double) (long) type.getValue());
+        }
+        return value.compareTo((double) type.getValue());
     }
 }
