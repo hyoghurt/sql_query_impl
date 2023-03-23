@@ -23,13 +23,5 @@ public class FindComparisonOperator extends Find {
                 .map(symbol -> new int[] {i, i + symbol.length()})
                 .findFirst()
                 .orElse(new int[] {i, i});
-
-//        for (String symbol : symbols) {
-//            if (s.startsWith(symbol, i)) {
-//                return new int[] {i, i + symbol.length()};
-//            }
-//        }
-//
-//        return new int[] {i, i};
     }
 }

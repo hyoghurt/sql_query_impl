@@ -1,25 +1,23 @@
 package com.digdes.school.operator.comparison;
 
-import com.digdes.school.exceptions.TypeErrorException;
+import com.digdes.school.type.Type;
 
-//public class NotEqual<T, U> extends ComparisonOperatorBase<T, U> {
-//
-//    public NotEqual() {
-//        super(ComparisonOperator.NOT_EQUAL);
-//    }
-//
-//    @Override
-//    public boolean test(T t, U u) {
-//        if (t == null && u == null) {
-//            return false;
-//        }
-//        if (t == null || u == null) {
-//            return true;
-//        }
-//        if (t.getClass() != u.getClass()) {
-//            throw new TypeErrorException(String.format("class not equals: %s and %s", t, u));
-//        }
-//        return !t.equals(u);
-//    }
-//}
+public class NotEqual<T extends Type, U extends Type> extends ComparisonOperatorBase<T, U> {
+
+    public NotEqual() {
+        super(ComparisonOperator.NOT_EQUAL);
+    }
+
+    @Override
+    public boolean test(T t, U u) {
+        if (t.getValue() == null || u.getValue() == null) {
+            return false;
+        }
+        return !t.equals(u);
+    }
+
+    @Override
+    public void validateType(T t, U u) {
+    }
+}
 

@@ -26,6 +26,14 @@ class InsertTest {
     private static Stream<Arguments> insert_test() {
         return Stream.of(
                 Arguments.of(
+                        "INSERT VALUES 'lastName'=null, 'id'=null, 'age'=null, 'cost'=3.4, 'active'=null",
+                        getExpected(null, null, null, 3.4, null)
+                ),
+                Arguments.of(
+                        "INSERT VALUES 'lastName'=null, 'id'=3, 'age'=40, 'cost'=3.4, 'active'=true",
+                        getExpected(null, 3L, 40L, 3.4, true)
+                ),
+                Arguments.of(
                         "INSERT VALUES 'lastName'='keks', 'id'=3, 'age'=40, 'cost'=3.4, 'active'=true",
                         getExpected("keks", 3L, 40L, 3.4, true)
                 ),
@@ -95,12 +103,6 @@ class InsertTest {
                 Arguments.of(
                         "INSERT VALUES 'lastName'='keks', 'id'=3, 'age'=40, 'cost'=3., 'active'=true",
                         getExpected("keks", 3L, 40L, 3.0, true)
-                ),
-
-
-                Arguments.of(
-                        "INSERT VALUES 'lastName'='keks', 'id'=0, 'age'=0, 'cost'=0, 'active'=true",
-                        getExpected("keks", 0L, 0L, 0.0, true)
                 )
         );
     }

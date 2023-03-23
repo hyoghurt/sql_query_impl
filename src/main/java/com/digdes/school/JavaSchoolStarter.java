@@ -3,10 +3,9 @@ package com.digdes.school;
 import com.digdes.school.enums.Statement;
 import com.digdes.school.exceptions.SyntaxErrorException;
 import com.digdes.school.parser.Parser;
-import com.digdes.school.parser.StringToTypeConverter;
 import com.digdes.school.table.Condition;
 import com.digdes.school.table.Table;
-import com.digdes.school.table.cell.TableImpl;
+import com.digdes.school.table.TableImpl;
 import com.digdes.school.type.*;
 
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class JavaSchoolStarter {
-    private final StringToTypeConverter stringToTypeConverter = new StringToTypeConverter();
     private final Parser parser = new Parser();
     private final Table table;
 
@@ -40,10 +38,6 @@ public class JavaSchoolStarter {
         Statement statement = parser.getStatement();
         Map<String, String> values = parser.getValues();
         List<Condition> conditions = parser.getConditions();
-
-        if (conditions != null) {
-            conditions.forEach(condition -> condition.setType(stringToTypeConverter.convert(condition.getValue())));
-        }
 
         if (statement == Statement.INSERT) {
             if (values == null || values.isEmpty()) {

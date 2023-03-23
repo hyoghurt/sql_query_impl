@@ -4,10 +4,10 @@ import com.digdes.school.exceptions.TypeErrorException;
 import com.digdes.school.type.StringType;
 import com.digdes.school.type.Type;
 
-public class Like<T extends Type, U extends Type> extends ComparisonOperatorBase<T, U> {
+public class ILike<T extends Type, U extends Type> extends ComparisonOperatorBase<T, U> {
 
-    public Like() {
-        super(ComparisonOperator.LIKE);
+    public ILike() {
+        super(ComparisonOperator.ILIKE);
     }
 
     @Override
@@ -19,6 +19,9 @@ public class Like<T extends Type, U extends Type> extends ComparisonOperatorBase
         if (t instanceof StringType && u instanceof StringType) {
             String tt = (String) t.getValue();
             String uu = (String) u.getValue();
+
+            tt = tt.toUpperCase();
+            uu = uu.toUpperCase();
 
             if (uu.length() >= 2) {
                 if (uu.startsWith("%") && uu.endsWith("%")) {
@@ -45,7 +48,7 @@ public class Like<T extends Type, U extends Type> extends ComparisonOperatorBase
     }
 
     private String exceptionMsg(T t, U u) {
-        return String.format("like not string: %s LIKE %s", t.getValue(), u.getValue());
+        return String.format("ilike not string: %s ILIKE %s", t.getValue(), u.getValue());
     }
 }
 

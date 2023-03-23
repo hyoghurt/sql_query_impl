@@ -1,7 +1,6 @@
 package com.digdes.school.type;
 
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.exceptions.TypeErrorException;
 
 import java.util.Objects;
 
@@ -33,7 +32,7 @@ public class StringType implements Type, Cloneable {
 
     @Override
     public String toString() {
-        return String.valueOf(value);
+        return value;
     }
 
     @Override

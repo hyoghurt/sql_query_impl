@@ -1,6 +1,7 @@
 package com.digdes.school.table;
 
 import com.digdes.school.exceptions.FieldNotFoundException;
+import com.digdes.school.exceptions.TypeErrorException;
 import com.digdes.school.type.Type;
 
 import java.util.Map;
@@ -23,29 +24,33 @@ public class TableFields {
         return s;
     }
 
-    public Map<String, Type> createNewMap(Map<String, String> values) {
-        Map<String, Type> map = fields.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().clone()));
+    public Type getFieldType(String key) {
+        String fieldName = getFieldName(key);
+        return fields.get(fieldName);
+    }
+
+    public Map<String, Type> createNewMap(Map<String, Type> values) {
+        Map<String, Type> map = getCopyFields();
 
         values.forEach((key, value) -> {
-            Type type = map.get(getFieldName(key));
-            if (!value.equals("null")) {
-                type.setValue(value);
+            String fieldName = getFieldName(key);
+            if (!map.containsKey(fieldName)) {
+                throw new FieldNotFoundException("field not found: " + key);
+            }
+            if (value != null) {
+                Type type = map.get(fieldName);
+                if (type.getClass() != value.getClass()) {
+                    throw new TypeErrorException("fail values type: " + value.getValue());
+                }
+                map.put(fieldName, value);
             }
         });
 
         return map;
     }
 
-    public Type createNewCell(String key, String value) {
-        Type cell = fields.get(getFieldName(key));
-        Type clone = cell.clone();
-        clone.setValue(value);
-        return clone;
-    }
-
-    public Type getFieldType(String key) {
-        String fieldName = getFieldName(key);
-        return fields.get(fieldName);
+    private Map<String, Type> getCopyFields() {
+        return fields.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().clone()));
     }
 }

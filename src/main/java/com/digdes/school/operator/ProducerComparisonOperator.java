@@ -1,10 +1,7 @@
 package com.digdes.school.operator;
 
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.operator.comparison.ComparisonOperatorInterface;
-import com.digdes.school.operator.comparison.Equal;
-import com.digdes.school.operator.comparison.Greater;
-import com.digdes.school.operator.comparison.Like;
+import com.digdes.school.operator.comparison.*;
 import com.digdes.school.type.Type;
 
 import java.util.ArrayList;
@@ -17,9 +14,13 @@ public class ProducerComparisonOperator {
     public ProducerComparisonOperator() {
         list = new ArrayList<>();
         list.add(new Equal<>());
-//        list.add(new NotEqual<>());
+        list.add(new NotEqual<>());
         list.add(new Greater<>());
+        list.add(new GreaterOrEqual<>());
+        list.add(new Less<>());
+        list.add(new LessOrEqual<>());
         list.add(new Like<>());
+        list.add(new ILike<>());
     }
 
     public ComparisonOperatorInterface<Type, Type> getOperator(String value) {

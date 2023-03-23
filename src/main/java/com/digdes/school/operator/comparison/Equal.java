@@ -13,9 +13,6 @@ public class Equal<T extends Type, U extends Type> extends ComparisonOperatorBas
         if (t.getValue() == null || u.getValue() == null) {
             return false;
         }
-        if (t.getValue().getClass() != u.getValue().getClass()) {
-            return false;
-        }
         return t.equals(u);
     }
 

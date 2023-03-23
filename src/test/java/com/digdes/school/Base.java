@@ -1,49 +1,162 @@
 package com.digdes.school;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+public class Base {
 
-class Base {
+    protected static JavaSchoolStarter starter;
+    protected static List<Map<String, Object>> list;
+    static Random rd = new Random();
 
-    JavaSchoolStarter starter;
-    static List<Map<String, Object>> list;
 
     static {
         list = new ArrayList<>();
-        list.add(newMap("keks1", 3L, 40L, true, null));
-        list.add(newMap("keks2", 4L, 45L, false, null));
-        list.add(newMap("keks3", 4L, 45L, false, null));
-        list.add(newMap("keks4", 5L, 8L, true, 34.9));
-        list.add(newMap("keks5", 5L, 45L, false, 3.0));
-        list.add(newMap("keks6", 5L, 46L, true, 34.9));
-        list.add(newMap("keks7", 6L, 4989L, false, 2.1));
-        list.add(newMap("keks7", null, null, null, null));
-        list.add(newMap(null, 7L, null, null, null));
-        list.add(newMap(null, null, 8L, null, null));
-        list.add(newMap(null, null, null, true, null));
-        list.add(newMap(null, null, null, null, 2.99));
+        starter = new JavaSchoolStarter();
+        String[] names = new String[] {
+                "",
+                "est",
+                "tes",
+                "test",
+                "tEst",
+                "ADteAst",
+
+                "ADtestAD",
+                "AtestAD",
+                "testAD",
+                "estAD",
+                "estADtest",
+                "testestAD",
+
+                "ADtestAD",
+                "ADtestA",
+                "ADtest",
+                "ADtes",
+                "testADtes",
+                "ADtestest",
+
+                "BCTESTBC",
+                "CTESTBC",
+                "TESTBC",
+                "ESTBC",
+                "TESTESTBC",
+                "ESTBCTEST",
+
+                "BCTESTBC",
+                "BCTESTB",
+                "BCTEST",
+                "BCTES",
+                "BCTESTEST",
+                "TESTBCTES",
+        };
+
+        Arrays.stream(names)
+                .map(v -> newItem(
+                        v,
+                        (Long) nullOrNot(rd.nextLong()),
+                        (Long) nullOrNot(rd.nextLong()),
+                        (Double) nullOrNot(getDoublePrecision(rd.nextDouble())),
+                        (Boolean) nullOrNot(rd.nextBoolean())))
+                .peek(objects -> list.add(newMapForList(objects)))
+                .forEach(objects -> starter.execute(createInsertQuery(objects)));
+
+        createStreamLong()
+                .map(v -> newItem(
+                        (String) nullOrNot(names[randIntRange(0, names.length - 1)]),
+                        v,
+                        (Long) nullOrNot(rd.nextLong()),
+                        (Double) nullOrNot(getDoublePrecision(rd.nextDouble())),
+                        (Boolean) nullOrNot(rd.nextBoolean())))
+                .peek(objects -> list.add(newMapForList(objects)))
+                .forEach(objects -> starter.execute(createInsertQuery(objects)));
+
+        createStreamLong()
+                .map(v -> newItem(
+                        (String) nullOrNot(names[randIntRange(0, names.length - 1)]),
+                        (Long) nullOrNot(rd.nextLong()),
+                        v,
+                        (Double) nullOrNot(getDoublePrecision(rd.nextDouble())),
+                        (Boolean) nullOrNot(rd.nextBoolean())))
+                .peek(objects -> list.add(newMapForList(objects)))
+                .forEach(objects -> starter.execute(createInsertQuery(objects)));
+
+        createStreamDouble()
+                .map(v -> newItem(
+                        (String) nullOrNot(names[randIntRange(0, names.length - 1)]),
+                        (Long) nullOrNot(rd.nextLong()),
+                        (Long) nullOrNot(rd.nextLong()),
+                        getDoublePrecision(v),
+                        (Boolean) nullOrNot(rd.nextBoolean())))
+                .peek(objects -> list.add(newMapForList(objects)))
+                .forEach(objects -> starter.execute(createInsertQuery(objects)));
     }
 
-    public Base() {
-        starter = new JavaSchoolStarter();
-        starter.execute("INSERT VALUES 'lastName' = 'keks1', 'id'=3, 'age'=40, 'active'=true");
-        starter.execute("INSERT VALUES 'lastName' = 'keks2', 'id'=4, 'age'=45, 'active'=false");
-        starter.execute("INSERT VALUES 'lastName' = 'keks3', 'id'=4, 'age'=45, 'active'=false");
-        starter.execute("INSERT VALUES 'lastName' = 'keks4', 'id'=5, 'age'=8, 'active'=true, 'cost'=34.9");
-        starter.execute("INSERT VALUES 'lastName' = 'keks5', 'id'=5, 'age'=45, 'active'=false, 'cost'=3");
-        starter.execute("INSERT VALUES 'lastName' = 'keks6', 'id'=5, 'age'=46, 'active'=true, 'cost'=34.9");
-        starter.execute("INSERT VALUES 'lastName' = 'keks7', 'id'=6, 'age'=4989, 'active'=false, 'cost'=2.1");
-        starter.execute("INSERT VALUES 'lastName' = 'keks7'");
-        starter.execute("INSERT VALUES 'id'=7");
-        starter.execute("INSERT VALUES 'age'=8");
-        starter.execute("INSERT VALUES 'active'=true");
-        starter.execute("INSERT VALUES 'cost'=2.99");
+    public static Double getDoublePrecision(Double d) {
+        return Math.round(d * 10000.0) / 10000.0;
     }
-    private static Map<String, Object> newMap(String lastName, Long id, Long age, Boolean active, Double cost) {
+
+    public static Stream<Long> createStreamLong() {
+        return Stream.iterate(-2L, n -> n + 1L)
+                .limit(10);
+    }
+
+    public static Stream<Double> createStreamDouble() {
+        return Stream.iterate(-2.0, n -> n + 0.1)
+                .limit(41);
+    }
+
+    static Object nullOrNot(Object obj) {
+        if (rd.nextBoolean()) {
+            return obj;
+        }
+        return null;
+    }
+
+    public static int randIntRange(int min, int max) {
+        return rd.nextInt((max - min) + 1) + min;
+    }
+
+    public static Map<String, Object> newMapForList(Object[] objects) {
+        String lastName = (String) objects[0];
+        Long id = (Long) objects[1];
+        Long age = (Long) objects[2];
+        Double cost = (Double) objects[3];
+        Boolean active = (Boolean) objects[4];
+
+        return newMap(lastName, id, age, cost, active);
+    }
+
+    public static Object[] newItem(String lastName, Long id, Long age, Double cost, Boolean active) {
+        return new Object[] {lastName, id, age, cost, active};
+    }
+
+    public static String createInsertQuery(Object[] objects) {
+        String lastName = (String) objects[0];
+        Long id = (Long) objects[1];
+        Long age = (Long) objects[2];
+        Double cost = (Double) objects[3];
+        Boolean active = (Boolean) objects[4];
+
+        StringBuilder query = new StringBuilder();
+
+        if (lastName != null) {
+            lastName = "'" + lastName + "'";
+        }
+
+        query.append(String
+                .format("INSERT VALUES 'lastName' = %s, 'id' = %d, 'age' = %d, 'cost' = %.4f, 'active' = ",
+                        lastName, id, age, cost));
+
+        if (active == null) {
+            query.append("null");
+        } else {
+            query.append(String.format("%b", active));
+        }
+
+        return query.toString();
+    }
+
+    public static Map<String, Object> newMap(String lastName, Long id, Long age, Double cost, Boolean active) {
         Map<String, Object> map = new HashMap<>();
 
         if (lastName != null) {
