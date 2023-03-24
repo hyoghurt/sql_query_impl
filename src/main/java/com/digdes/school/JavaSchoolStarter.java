@@ -2,9 +2,7 @@ package com.digdes.school;
 
 import com.digdes.school.enums.Statement;
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.enums.LogicalOperator;
 import com.digdes.school.parser.Parser;
-import com.digdes.school.table.Condition;
 import com.digdes.school.table.Table;
 import com.digdes.school.table.TableImpl;
 import com.digdes.school.type.*;
@@ -39,18 +37,17 @@ public class JavaSchoolStarter {
 
         Statement statement = parser.getStatement();
         Map<String, Type> values = parser.getValues();
-        List<Condition> conditions = parser.getConditions();
-        List<LogicalOperator> logicalOperators = parser.getLogicalOperators();
+        List<Object> conditions = parser.getConditions();
 
         switch (statement) {
             case INSERT:
                 return table.insert(values);
             case SELECT:
-                return table.select(conditions, logicalOperators);
+                return table.select(conditions);
             case UPDATE:
-                return table.update(values, conditions, logicalOperators);
+                return table.update(values, conditions);
             case DELETE:
-                return table.delete(conditions, logicalOperators);
+                return table.delete(conditions);
         }
 
         throw new RuntimeException();
@@ -59,12 +56,11 @@ public class JavaSchoolStarter {
     private void validate() {
         Statement statement = parser.getStatement();
         Map<String, Type> values = parser.getValues();
-        List<Condition> conditions = parser.getConditions();
-        List<LogicalOperator> logicalOperators = parser.getLogicalOperators();
+        List<Object> conditions = parser.getConditions();
 
         switch (statement) {
             case INSERT:
-                if (conditions != null || logicalOperators != null) {
+                if (conditions != null) {
                     throw new SyntaxErrorException("insert with conditions or logical operators");
                 }
                 if (values == null) {

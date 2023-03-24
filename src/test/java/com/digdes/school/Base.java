@@ -8,6 +8,7 @@ public class Base {
     protected static JavaSchoolStarter starter;
     protected static List<Map<String, Object>> list;
     static Random rd = new Random();
+    static int maxRange = 10;
 
 
     static {
@@ -50,43 +51,44 @@ public class Base {
                 "TESTBCTES",
         };
 
+
         Arrays.stream(names)
                 .map(v -> newItem(
                         v,
-                        (Long) nullOrNot(rd.nextLong()),
-                        (Long) nullOrNot(rd.nextLong()),
-                        (Double) nullOrNot(getDoublePrecision(rd.nextDouble())),
-                        (Boolean) nullOrNot(rd.nextBoolean())))
+                        getNullOrRandomLong(),
+                        getNullOrRandomLong(),
+                        getNullOrRandomDouble(),
+                        getNullOrRandomBoolean()))
                 .peek(objects -> list.add(newMapForList(objects)))
                 .forEach(objects -> starter.execute(createInsertQuery(objects)));
 
         createStreamLong()
                 .map(v -> newItem(
-                        (String) nullOrNot(names[randIntRange(0, names.length - 1)]),
+                        getNullOrRandomString(names),
                         v,
-                        (Long) nullOrNot(rd.nextLong()),
-                        (Double) nullOrNot(getDoublePrecision(rd.nextDouble())),
-                        (Boolean) nullOrNot(rd.nextBoolean())))
+                        getNullOrRandomLong(),
+                        getNullOrRandomDouble(),
+                        getNullOrRandomBoolean()))
                 .peek(objects -> list.add(newMapForList(objects)))
                 .forEach(objects -> starter.execute(createInsertQuery(objects)));
 
         createStreamLong()
                 .map(v -> newItem(
-                        (String) nullOrNot(names[randIntRange(0, names.length - 1)]),
-                        (Long) nullOrNot(rd.nextLong()),
+                        getNullOrRandomString(names),
+                        getNullOrRandomLong(),
                         v,
-                        (Double) nullOrNot(getDoublePrecision(rd.nextDouble())),
-                        (Boolean) nullOrNot(rd.nextBoolean())))
+                        getNullOrRandomDouble(),
+                        getNullOrRandomBoolean()))
                 .peek(objects -> list.add(newMapForList(objects)))
                 .forEach(objects -> starter.execute(createInsertQuery(objects)));
 
         createStreamDouble()
                 .map(v -> newItem(
-                        (String) nullOrNot(names[randIntRange(0, names.length - 1)]),
-                        (Long) nullOrNot(rd.nextLong()),
-                        (Long) nullOrNot(rd.nextLong()),
+                        getNullOrRandomString(names),
+                        getNullOrRandomLong(),
+                        getNullOrRandomLong(),
                         getDoublePrecision(v),
-                        (Boolean) nullOrNot(rd.nextBoolean())))
+                        getNullOrRandomBoolean()))
                 .peek(objects -> list.add(newMapForList(objects)))
                 .forEach(objects -> starter.execute(createInsertQuery(objects)));
     }
@@ -114,6 +116,27 @@ public class Base {
 
     public static int randIntRange(int min, int max) {
         return rd.nextInt((max - min) + 1) + min;
+    }
+
+    private static Long getNullOrRandomLong() {
+        return (Long) nullOrNot(randLongRange(-maxRange, maxRange));
+    }
+
+    private static Double getNullOrRandomDouble() {
+        return (Double) nullOrNot(getDoublePrecision(-maxRange + (maxRange + maxRange) * rd.nextDouble()));
+    }
+
+    private static Boolean getNullOrRandomBoolean() {
+        return (Boolean) nullOrNot(rd.nextBoolean());
+    }
+
+    private static String getNullOrRandomString(String[] names) {
+        return (String) nullOrNot(names[randIntRange(0, names.length - 1)]);
+    }
+
+
+    public static Long randLongRange(int min, int max) {
+        return (long) (rd.nextInt((max - min) + 1) + min);
     }
 
     public static Map<String, Object> newMapForList(Object[] objects) {

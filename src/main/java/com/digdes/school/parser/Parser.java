@@ -1,10 +1,10 @@
 package com.digdes.school.parser;
 
+import com.digdes.school.enums.*;
+import com.digdes.school.operator.logical.LogicalOperatorBase;
+import com.digdes.school.operator.logical.LogicalOperatorProducer;
 import com.digdes.school.table.Condition;
-import com.digdes.school.enums.Clause;
-import com.digdes.school.enums.Statement;
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.enums.LogicalOperator;
 import com.digdes.school.parser.find.*;
 import com.digdes.school.type.Type;
 
@@ -15,17 +15,12 @@ public class Parser extends Constants {
     private Integer offset;
     private Statement statement;
     private Map<String, Type> values = null;
-    private List<Condition> conditions = null;
-    private List<LogicalOperator> logicalOperators = null;
+    private List<Object> conditions = null;
     private final FindComparisonOperator findComparisonOperator = new FindComparisonOperator();
     private final FindAssignment findAssignment = new FindAssignment();
     private final FindStatement findStatement = new FindStatement();
     private final FindString findString = new FindString();
     private final FindValue findValue = new FindValue();
-
-    public List<LogicalOperator> getLogicalOperators() {
-        return logicalOperators;
-    }
 
     public Statement getStatement() {
         return statement;
@@ -35,18 +30,16 @@ public class Parser extends Constants {
         return values;
     }
 
-    public List<Condition> getConditions() {
+    public List<Object> getConditions() {
         return conditions;
     }
 
     public void parse(String query) {
-        this.logicalOperators = null;
         this.conditions = null;
         this.statement = null;
         this.values = null;
         this.query = query;
         this.offset = 0;
-
 
         try {
             String statement = skipSpaceDecorator(findStatement);
@@ -105,18 +98,29 @@ public class Parser extends Constants {
 
     private void createConditions() {
         conditions = new ArrayList<>();
-        logicalOperators = new ArrayList<>();
+        Stack<LogicalOperatorBase> stack = new Stack<>();
 
-        while (true) {
-            conditions.add(findCondition());
+        while (offset < query.length()) {
+            Condition condition = findCondition();
+            conditions.add(condition);
 
             if (offset < query.length()) {
-                String logicalOperator = skipSpaceDecorator(findStatement);
-                LogicalOperator lo = LogicalOperator.valueOf(logicalOperator.toUpperCase());
-                logicalOperators.add(lo);
-            } else {
-                break;
+                String symbol = skipSpaceDecorator(findStatement);
+                LogicalOperatorBase operator = LogicalOperatorProducer.getOperator(symbol);
+
+                while (!stack.isEmpty() && stack.peek().getPriority() >= operator.getPriority()) {
+                    conditions.add(stack.pop());
+                }
+                stack.addElement(operator);
             }
+        }
+
+        while (!stack.isEmpty()) {
+            conditions.add(stack.pop());
+        }
+
+        if (conditions.isEmpty()) {
+            throw new SyntaxErrorException(getExceptionMsg("values not found"));
         }
     }
 
@@ -158,7 +162,11 @@ public class Parser extends Constants {
 
     private void checkAndThrowException(int[] position) {
         if (position[0] == position[1]) {
-            throw new SyntaxErrorException(String.format("error, position %d, query - %s", offset, query));
+            throw new SyntaxErrorException(getExceptionMsg("error"));
         }
+    }
+
+    private String getExceptionMsg(String msg) {
+        return String.format("%s, position %d, query - %s", msg, offset, query);
     }
 }
