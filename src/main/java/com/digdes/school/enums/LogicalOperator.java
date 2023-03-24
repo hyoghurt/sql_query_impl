@@ -1,4 +1,4 @@
-package com.digdes.school.operator.logical;
+package com.digdes.school.enums;
 
 public enum LogicalOperator {
     AND,

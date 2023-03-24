@@ -4,29 +4,34 @@ import com.digdes.school.table.Condition;
 import com.digdes.school.enums.Clause;
 import com.digdes.school.enums.Statement;
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.operator.logical.LogicalOperator;
+import com.digdes.school.enums.LogicalOperator;
 import com.digdes.school.parser.find.*;
+import com.digdes.school.type.Type;
 
 import java.util.*;
 
 public class Parser extends Constants {
-    private List<LogicalOperator> logicalOperators = null;
-    private List<Condition> conditions = null;
-    private Map<String, String> values = null;
     private String query;
     private Integer offset;
     private Statement statement;
+    private Map<String, Type> values = null;
+    private List<Condition> conditions = null;
+    private List<LogicalOperator> logicalOperators = null;
     private final FindComparisonOperator findComparisonOperator = new FindComparisonOperator();
     private final FindAssignment findAssignment = new FindAssignment();
     private final FindStatement findStatement = new FindStatement();
     private final FindString findString = new FindString();
     private final FindValue findValue = new FindValue();
 
+    public List<LogicalOperator> getLogicalOperators() {
+        return logicalOperators;
+    }
+
     public Statement getStatement() {
         return statement;
     }
 
-    public Map<String, String> getValues() {
+    public Map<String, Type> getValues() {
         return values;
     }
 
@@ -41,6 +46,7 @@ public class Parser extends Constants {
         this.values = null;
         this.query = query;
         this.offset = 0;
+
 
         try {
             String statement = skipSpaceDecorator(findStatement);
@@ -83,14 +89,13 @@ public class Parser extends Constants {
         values = new HashMap<>();
 
         while (true) {
-            Map.Entry<String, String> entry = findKeyValue();
-
-            if (values.containsKey(entry.getKey())) {
-                throw new SyntaxErrorException("double field name: " + entry.getKey());
+            String[] arr = findKeyValue();
+            if (values.containsKey(arr[0])) {
+                throw new SyntaxErrorException("double field name: " + arr[0]);
             }
-            values.put(entry.getKey(), entry.getValue());
+            values.put(arr[0], Converter.valueToType(arr[1], true));
 
-            if (offset < query.length() && query.charAt(offset) == DELIMITER) {
+            if (offset < query.length() && query.charAt(offset) == VALUES_DELIMITER) {
                 ++offset;
             } else {
                 break;
@@ -115,23 +120,22 @@ public class Parser extends Constants {
         }
     }
 
-    private Map.Entry<String, String> findKeyValue() {
+    private String[] findKeyValue() {
         String key = getSubstringWithoutQuote(skipSpaceDecorator(findString));
         skipSpaceDecorator(findAssignment);
         String value = skipSpaceDecorator(findValue);
-
-        return new AbstractMap.SimpleEntry<>(key, value);
+        return new String[] {key.toUpperCase(), value};
     }
 
     private Condition findCondition() {
         String key = getSubstringWithoutQuote(skipSpaceDecorator(findString));
-        String operatorSymbol = skipSpaceDecorator(findComparisonOperator);
+        String symbol = skipSpaceDecorator(findComparisonOperator);
         String value = skipSpaceDecorator(findValue);
 
         Condition condition = new Condition();
-        condition.setKey(key);
+        condition.setKey(key.toUpperCase());
         condition.setValue(value);
-        condition.setOperatorSymbol(operatorSymbol);
+        condition.setOperatorSymbol(symbol);
 
         return condition;
     }
@@ -147,14 +151,14 @@ public class Parser extends Constants {
     private String skipSpaceDecorator(FindInterface function) {
         offset = function.skipSpace(query, offset);
         int[] position = function.apply(query, offset);
-        checkAndThrowException(position, "not found");
+        checkAndThrowException(position);
         offset = function.skipSpace(query, position[1]);
         return getSubstring(position);
     }
 
-    private void checkAndThrowException(int[] position, String msg) {
+    private void checkAndThrowException(int[] position) {
         if (position[0] == position[1]) {
-            throw new SyntaxErrorException(String.format("%s, position %d, query - %s", msg, offset, query));
+            throw new SyntaxErrorException(String.format("error, position %d, query - %s", offset, query));
         }
     }
 }

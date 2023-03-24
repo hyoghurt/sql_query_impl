@@ -1,95 +1,105 @@
 package com.digdes.school.table;
 
-import com.digdes.school.operator.ProducerComparisonOperator;
-import com.digdes.school.operator.logical.LogicalOperator;
+import com.digdes.school.enums.LogicalOperator;
 import com.digdes.school.type.Type;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TableImpl implements Table {
-    private final ProducerComparisonOperator producerComparisonOperator = new ProducerComparisonOperator();
-    private final Converter converter = new Converter();
-    private final TableFields tableFields;
-    private final List<Row> rows = new ArrayList<>();
+    private final NewRowProducer newRowProducer;
+    private List<Row> rows = new ArrayList<>();
 
     public TableImpl(Map<String, Type> map) {
-        tableFields = new TableFields(map);
+        newRowProducer = new NewRowProducer(map);
     }
 
     @Override
-    public List<Map<String, Object>> insert(Map<String, String> values) {
-        Map<String, Type> valuesType = convertStringToType(values);
-        Row row = new Row(tableFields.createNewMap(valuesType));
+    public List<Map<String, Object>> insert(Map<String, Type> values) {
+        Row row = new Row(newRowProducer.createNewMap(values));
         rows.add(row);
 
-        return Stream.of(row.getCopyRowWithoutNull())
+        return Stream.of(row.getRowWithoutNull())
+                .map(this::reverseFieldName)
                 .collect(Collectors.toList());
     }
 
+    public Map<String, Object> reverseFieldName(Map<String, Object> map) {
+        return map.entrySet().stream()
+                        .collect(Collectors
+                                .toMap(e -> newRowProducer.getFieldName(e.getKey()),
+                                        Map.Entry::getValue));
+    }
+
     @Override
-    public List<Map<String, Object>> select(List<Condition> conditions) {
-        List<Row> rows = this.rows;
+    public List<Map<String, Object>> select(List<Condition> conditions, List<LogicalOperator> operators) {
+        List<Row> answer = this.rows;
 
         if (conditions != null) {
-            prepareConditions(conditions);
-            rows = this.rows.stream()
-                    .filter(e -> isRowSatisfyCondition(e, conditions))
+            validateConditionType(conditions);
+            answer = this.rows.stream()
+                    .filter(e -> LogicalOperatorService.isMatch(e, conditions, operators))
                     .collect(Collectors.toList());
         }
 
-        return rows.stream()
-                .map(Row::getCopyRowWithoutNull)
+        return answer.stream()
+                .map(Row::getRowWithoutNull)
+                .map(this::reverseFieldName)
                 .collect(Collectors.toList());
     }
 
-    private Map<String, Type> convertStringToType(Map<String, String> values) {
-        return values.entrySet().stream()
-                .collect(
-                        HashMap::new,
-                        (m,v) -> m.put(v.getKey(), converter.stringToType(v.getValue(), true)),
-                        HashMap::putAll);
-    }
+    @Override
+    public List<Map<String, Object>> update(Map<String, Type> values,
+                                            List<Condition> conditions,
+                                            List<LogicalOperator> operators) {
+        List<Row> answer = this.rows;
 
-    private void prepareConditions(List<Condition> conditions) {
+        if (conditions != null) {
+            validateConditionType(conditions);
+            answer = this.rows.stream()
+                    .filter(e -> LogicalOperatorService.isMatch(e, conditions, operators))
+                    .collect(Collectors.toList());
+        }
 
-        //set type
-        conditions.forEach(condition -> {
-            Type type = converter.stringToType(condition.getValue(), false);
-            condition.setType(type);
-        });
+        answer.forEach(row -> row.update(values));
 
-        //set operator engine
-        conditions.forEach(condition -> condition
-                .setOperator(producerComparisonOperator.getOperator(condition.getOperatorSymbol())));
-
-        //validate type
-        conditions.forEach(condition -> {
-            Type conditionType = condition.getType();
-            Type fieldType = tableFields.getFieldType(condition.getKey());
-            condition.getOperator().validateType(conditionType, fieldType);
-        });
-    }
-
-    private boolean isRowSatisfyCondition(Row row, List<Condition> conditions) {
-        Condition condition = conditions.get(0);
-
-        String key = condition.getKey();
-        Type rowType = row.getTypeByKey(tableFields.getFieldName(key));
-        Type conditionType = condition.getType();
-
-        return condition.getOperator().test(rowType, conditionType);
+        return answer.stream()
+                .map(Row::getRowWithoutNull)
+                .map(this::reverseFieldName)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Map<String, Object>> update(Map<String, String> values,
-                                            List<Condition> conditions,
-                                            List<LogicalOperator> logicalOperators) {
+    public List<Map<String, Object>> delete(List<Condition> conditions, List<LogicalOperator> operators) {
+        List<Row> answer = this.rows;
+        List<Row> result = new ArrayList<>();
 
-        return null;
+        if (conditions != null) {
+            validateConditionType(conditions);
+
+            Map<Boolean, List<Row>> collect = this.rows.stream()
+                    .collect(Collectors
+                            .partitioningBy(e -> LogicalOperatorService.isMatch(e, conditions, operators)));
+
+            answer = collect.get(true);
+            result = collect.get(false);
+        }
+
+        this.rows = result;
+
+        return answer.stream()
+                .map(Row::getRowWithoutNull)
+                .map(this::reverseFieldName)
+                .collect(Collectors.toList());
+    }
+
+    private void validateConditionType(List<Condition> conditions) {
+        conditions.forEach(condition -> {
+            Type type = newRowProducer.getCopyFieldType(condition.getKey());
+            condition.validateType(type);
+        });
     }
 }

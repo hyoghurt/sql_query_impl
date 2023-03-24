@@ -1,5 +1,6 @@
 package com.digdes.school.operator.comparison;
 
+import com.digdes.school.enums.ComparisonOperator;
 import com.digdes.school.exceptions.TypeErrorException;
 import com.digdes.school.type.StringType;
 import com.digdes.school.type.Type;

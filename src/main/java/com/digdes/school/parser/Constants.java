@@ -1,10 +1,10 @@
 package com.digdes.school.parser;
 
 public class Constants {
-    public final char SPACE = ' ';
-    public final char ASSIGNMENT_SYMBOL = '=';
-    public final char STRING_WRAPPER = '\'';
-    public final char DELIMITER = ',';
-    public final String BOOLEAN_TRUE = "true";
-    public final String BOOLEAN_FALSE = "false";
+    public static final char SPACE = ' ';
+    public static final char ASSIGNMENT_SYMBOL = '=';
+    public static final char STRING_WRAPPER = '\'';
+    public static final char VALUES_DELIMITER = ',';
+    public static final String BOOLEAN_TRUE = "true";
+    public static final String BOOLEAN_FALSE = "false";
 }

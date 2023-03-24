@@ -1,4 +1,4 @@
-package com.digdes.school.operator;
+package com.digdes.school.operator.comparison;
 
 import com.digdes.school.exceptions.SyntaxErrorException;
 import com.digdes.school.operator.comparison.*;
@@ -7,11 +7,11 @@ import com.digdes.school.type.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProducerComparisonOperator {
+public class ComparisonOperatorProducer {
 
-    List<ComparisonOperatorInterface<Type, Type>> list;
+    static List<ComparisonOperatorInterface<Type, Type>> list;
 
-    public ProducerComparisonOperator() {
+    static {
         list = new ArrayList<>();
         list.add(new Equal<>());
         list.add(new NotEqual<>());
@@ -23,9 +23,9 @@ public class ProducerComparisonOperator {
         list.add(new ILike<>());
     }
 
-    public ComparisonOperatorInterface<Type, Type> getOperator(String value) {
+    public static ComparisonOperatorInterface<Type, Type> getOperator(String symbol) {
         return list.stream()
-                .filter(operator -> operator.getSymbol().equals(value))
+                .filter(operator -> operator.getSymbol().equals(symbol))
                 .findAny()
                 .orElseThrow(() -> new SyntaxErrorException("not found comparison operator"));
     }

@@ -1,6 +1,6 @@
 package com.digdes.school.operator.comparison;
 
-import com.digdes.school.type.Type;
+import com.digdes.school.enums.ComparisonOperator;
 
 public abstract class ComparisonOperatorBase<T, U> implements ComparisonOperatorInterface<T, U> {
     private final ComparisonOperator operator;

@@ -1,21 +1,26 @@
 package com.digdes.school.table;
 
 import com.digdes.school.operator.comparison.ComparisonOperatorInterface;
+import com.digdes.school.operator.comparison.ComparisonOperatorProducer;
+import com.digdes.school.parser.Converter;
 import com.digdes.school.type.Type;
 
 public class Condition {
     private String key;
     private String value;
     private Type type;
-    private String operatorSymbol;
     private ComparisonOperatorInterface<Type, Type> operator;
 
-    public String getOperatorSymbol() {
-        return operatorSymbol;
+    public boolean isSatisfy(Type type) {
+        return operator.test(type, this.type);
     }
 
-    public void setOperatorSymbol(String operatorSymbol) {
-        this.operatorSymbol = operatorSymbol;
+    public void validateType(Type type) {
+        operator.validateType(this.type, type);
+    }
+
+    public void setOperatorSymbol(String symbol) {
+        this.operator = ComparisonOperatorProducer.getOperator(symbol);
     }
 
     public String getKey() {
@@ -32,6 +37,7 @@ public class Condition {
 
     public void setValue(String value) {
         this.value = value;
+        this.type = Converter.valueToType(value, false);
     }
 
     public Type getType() {

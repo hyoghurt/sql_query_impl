@@ -1,12 +1,11 @@
-package com.digdes.school.table;
+package com.digdes.school.parser;
 
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.parser.Constants;
 import com.digdes.school.type.*;
 
 public class Converter extends Constants {
 
-    public Type stringToType(String value, Boolean checkIsNull) {
+    public static Type valueToType(String value, Boolean checkIsNull) {
         Type type = null;
         String regForString = String.format("^%c.*%c$", STRING_WRAPPER, STRING_WRAPPER);
 

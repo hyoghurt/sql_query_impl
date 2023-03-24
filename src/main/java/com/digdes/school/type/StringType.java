@@ -14,7 +14,7 @@ public class StringType implements Type, Cloneable {
     @Override
     public void setValue(String value) {
         if (value.length() < 2 || !value.startsWith("'") || !value.endsWith("'")) {
-            throw new SyntaxErrorException("fail value to string: " + value);
+            throw new SyntaxErrorException("fail value to stringType: " + value);
         }
         this.value = value.substring(1, value.length() - 1);
     }
@@ -40,7 +40,7 @@ public class StringType implements Type, Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StringType that = (StringType) o;
-        return Objects.equals(value, that.value);
+        return value.equals(that.value);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.digdes.school.operator.comparison;
 
+import com.digdes.school.enums.ComparisonOperator;
 import com.digdes.school.type.Type;
 
 public class Equal<T extends Type, U extends Type> extends ComparisonOperatorBase<T, U> {

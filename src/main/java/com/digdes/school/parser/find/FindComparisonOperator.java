@@ -1,6 +1,6 @@
 package com.digdes.school.parser.find;
 
-import com.digdes.school.operator.comparison.ComparisonOperator;
+import com.digdes.school.enums.ComparisonOperator;
 
 import java.util.Arrays;
 import java.util.List;
