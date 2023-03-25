@@ -17,12 +17,12 @@ public class NumberOperatorExceptionTest extends OperatorBase {
 
     @ParameterizedTest
     @MethodSource
-    void number_type_exception(String query) {
+    void number_operator_exception(String query) {
         JavaSchoolStarter starter = new JavaSchoolStarter();
         assertThrows(TypeErrorException.class, () -> starter.execute(query));
     }
 
-    private static Stream<Arguments> number_type_exception() {
+    private static Stream<Arguments> number_operator_exception() {
         String[] operators = new String[] {"<", ">", "<=", ">="};
 
         List<String[]> list = new ArrayList<>();

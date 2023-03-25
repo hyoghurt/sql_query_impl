@@ -7,14 +7,14 @@ public class Base {
 
     protected static JavaSchoolStarter starter;
     protected static List<Map<String, Object>> list;
+    protected static String[] names;
     static Random rd = new Random();
     static int maxRange = 10;
-
 
     static {
         list = new ArrayList<>();
         starter = new JavaSchoolStarter();
-        String[] names = new String[] {
+        names = new String[] {
                 "",
                 "est",
                 "tes",
@@ -118,15 +118,15 @@ public class Base {
         return rd.nextInt((max - min) + 1) + min;
     }
 
-    private static Long getNullOrRandomLong() {
+    public static Long getNullOrRandomLong() {
         return (Long) nullOrNot(randLongRange(-maxRange, maxRange));
     }
 
-    private static Double getNullOrRandomDouble() {
+    public static Double getNullOrRandomDouble() {
         return (Double) nullOrNot(getDoublePrecision(-maxRange + (maxRange + maxRange) * rd.nextDouble()));
     }
 
-    private static Boolean getNullOrRandomBoolean() {
+    public static Boolean getNullOrRandomBoolean() {
         return (Boolean) nullOrNot(rd.nextBoolean());
     }
 

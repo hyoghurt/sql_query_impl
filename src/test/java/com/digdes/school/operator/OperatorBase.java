@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-class OperatorBase extends Base {
+public class OperatorBase extends Base {
 
     public static List<Map<String, Object>> filter(String key, Object val, MyFilter myFilter) {
         return list.stream()
@@ -14,7 +14,7 @@ class OperatorBase extends Base {
                 .collect(Collectors.toList());
     }
 
-    static class GreaterFilter implements MyFilter {
+    public static class GreaterFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             Object o = map.get(key);
@@ -36,7 +36,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class GreaterOrEqualFilter implements MyFilter {
+    public static class GreaterOrEqualFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             Object o = map.get(key);
@@ -58,7 +58,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class LessFilter implements MyFilter {
+    public static class LessFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             Object o = map.get(key);
@@ -80,7 +80,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class LessOrEqualFilter implements MyFilter {
+    public static class LessOrEqualFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             Object o = map.get(key);
@@ -103,21 +103,21 @@ class OperatorBase extends Base {
     }
 
 
-    static class EqualFilter implements MyFilter {
+    public static class EqualFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             return map.get(key) != null && map.get(key).equals(val);
         }
     }
 
-    static class NotEqualFilter implements MyFilter {
+    public static class NotEqualFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             return map.get(key) != null && !map.get(key).equals(val);
         }
     }
 
-    static class LikeStartFilter implements MyFilter {
+    public static class LikeStartFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             if (map.get(key) != null) {
@@ -128,7 +128,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class LikeEndFilter implements MyFilter {
+    public static class LikeEndFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             if (map.get(key) != null) {
@@ -139,7 +139,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class LikeContainsFilter implements MyFilter {
+    public static class LikeContainsFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             if (map.get(key) != null) {
@@ -150,7 +150,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class ILikeStartFilter implements MyFilter {
+    public static class ILikeStartFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             if (map.get(key) != null) {
@@ -162,7 +162,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class ILikeEndFilter implements MyFilter {
+    public static class ILikeEndFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             if (map.get(key) != null) {
@@ -174,7 +174,7 @@ class OperatorBase extends Base {
         }
     }
 
-    static class ILikeContainsFilter implements MyFilter {
+    public static class ILikeContainsFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
             if (map.get(key) != null) {

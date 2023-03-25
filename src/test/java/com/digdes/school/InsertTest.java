@@ -1,20 +1,50 @@
 package com.digdes.school;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class InsertTest {
-    JavaSchoolStarter starter = new JavaSchoolStarter();
+class InsertTest extends Base {
 
+    JavaSchoolStarter starter;
+    List<Map<String, Object>> list;
+
+    @BeforeEach
+    void init() {
+        starter = new JavaSchoolStarter();
+        list = new ArrayList<>();
+
+        Arrays.stream(names)
+                .map(v -> newItem(
+                        v,
+                        getNullOrRandomLong(),
+                        getNullOrRandomLong(),
+                        getNullOrRandomDouble(),
+                        getNullOrRandomBoolean()))
+                .peek(objects -> list.add(newMapForList(objects)))
+                .forEach(objects -> starter.execute(createInsertQuery(objects)));
+    }
+
+    @Test
+    void insert_test_1() {
+        String query = "INSERT values 'age'=4";
+        List<Map<String, Object>> expected = getExpected(null, null, 4L, null, null);
+        List<Map<String, Object>> actual = starter.execute(query);
+        assertEquals(expected, actual);
+
+        list.add(expected.get(0));
+
+        query = "SELECT";
+        List<Map<String, Object>> actualSelect = starter.execute(query);
+        assertEquals(list, actualSelect);
+    }
 
     @ParameterizedTest
     @MethodSource
@@ -26,7 +56,7 @@ class InsertTest {
     private static Stream<Arguments> insert_test() {
         return Stream.of(
                 Arguments.of(
-                        "INSERT VALUES 'lastName'=null, 'id'=null, 'age'=null, 'cost'=3.4, 'active'=null",
+                        "insert values 'lastName'=null, 'id'=null, 'age'=null, 'cost'=3.4, 'active'=null",
                         getExpected(null, null, null, 3.4, null)
                 ),
                 Arguments.of(
@@ -97,12 +127,12 @@ class InsertTest {
 
 
                 Arguments.of(
-                        "INSERT VALUES 'lastName'='keks', 'id'=3, 'age'=40, 'cost'=.4, 'active'=true",
-                        getExpected("keks", 3L, 40L, 0.4, true)
+                        "INSERT VALUES 'cost'=.4",
+                        getExpected(null, null, null, 0.4, null)
                 ),
                 Arguments.of(
-                        "INSERT VALUES 'lastName'='keks', 'id'=3, 'age'=40, 'cost'=3., 'active'=true",
-                        getExpected("keks", 3L, 40L, 3.0, true)
+                        "INSERT VALUES 'cost'=3.",
+                        getExpected(null, null, null, 3.0, null)
                 )
         );
     }

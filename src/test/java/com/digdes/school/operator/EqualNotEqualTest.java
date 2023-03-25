@@ -15,12 +15,12 @@ class EqualNotEqualTest extends OperatorBase {
 
     @ParameterizedTest
     @MethodSource
-    void equal_test(String query, List<Map<String,Object>> expected) {
+    void equal_no_equal_test(String query, List<Map<String,Object>> expected) {
         List<Map<String, Object>> actual = starter.execute(query);
         assertEquals(expected, actual);
     }
 
-    private static Stream<Arguments> equal_test() {
+    private static Stream<Arguments> equal_no_equal_test() {
         return Stream.concat(createStreamArguments("lastName"),
                 Stream.concat(createStreamArguments("id"),
                         Stream.concat(createStreamArguments("age"),

@@ -17,12 +17,12 @@ public class LikeILikeExceptionTest extends OperatorBase {
 
     @ParameterizedTest
     @MethodSource
-    void type_exception(String query) {
+    void like_ilike_exception_test(String query) {
         JavaSchoolStarter starter = new JavaSchoolStarter();
         assertThrows(TypeErrorException.class, () -> starter.execute(query));
     }
 
-    private static Stream<Arguments> type_exception() {
+    private static Stream<Arguments> like_ilike_exception_test() {
         String[] operators = new String[] {"LIKE", "ILIKE"};
 
         List<String[]> list = new ArrayList<>();

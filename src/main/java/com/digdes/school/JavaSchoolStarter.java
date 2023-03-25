@@ -60,16 +60,21 @@ public class JavaSchoolStarter {
 
         switch (statement) {
             case INSERT:
-                if (conditions != null) {
-                    throw new SyntaxErrorException("insert with conditions or logical operators");
-                }
                 if (values == null) {
                     throw new SyntaxErrorException("insert without values");
+                }
+                if (conditions != null) {
+                    throw new SyntaxErrorException("insert with conditions or logical operators");
                 }
                 break;
             case SELECT:
                 if (values != null) {
                     throw new SyntaxErrorException("select with values");
+                }
+                break;
+            case UPDATE:
+                if (values == null) {
+                    throw new SyntaxErrorException("update without values");
                 }
                 break;
             case DELETE:
