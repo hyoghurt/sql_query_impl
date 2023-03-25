@@ -11,8 +11,8 @@ public class NotEqual<T extends Type, U extends Type> extends ComparisonOperator
 
     @Override
     public boolean test(T t, U u) {
-        if (t.getValue() == null || u.getValue() == null) {
-            return false;
+        if (t.getValue() == null) {
+            return true;
         }
         return !t.equals(u);
     }

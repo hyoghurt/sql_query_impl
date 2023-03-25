@@ -113,7 +113,10 @@ public class OperatorBase extends Base {
     public static class NotEqualFilter implements MyFilter {
         @Override
         public boolean filter(Map<String, Object> map, String key, Object val) {
-            return map.get(key) != null && !map.get(key).equals(val);
+            if (map.get(key) == null) {
+                return true;
+            }
+            return !map.get(key).equals(val);
         }
     }
 

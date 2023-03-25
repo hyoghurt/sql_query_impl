@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+//Reverse Polish notation
 public class ConditionsService {
 
     public boolean isMatch(Row row, List<Object> conditions) {
