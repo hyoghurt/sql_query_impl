@@ -7,11 +7,11 @@ import com.digdes.school.type.Type;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class NewRowProducer {
+public class RowProducer {
     private final Map<String, Type> fields;
     private final Map<String, String> upperKeyMapper;
 
-    public NewRowProducer(Map<String, Type> map) {
+    public RowProducer(Map<String, Type> map) {
         fields = map.entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().toUpperCase(), e -> e.getValue().clone()));
 
@@ -35,21 +35,24 @@ public class NewRowProducer {
         return type.clone();
     }
 
-    public Map<String, Type> createNewMap(Map<String, Type> values) {
-        Map<String, Type> map = getCopyFields();
-
+    public void validateValues(Map<String, Type> values) {
         values.forEach((key, value) -> {
-            Type type = map.get(key);
+            Type type = fields.get(key);
             if (type == null) {
                 throw new FieldNotFoundException("field not found: " + key);
             }
-            if (value != null) {
-                if (type.getClass() != value.getClass()) {
-                    throw new TypeErrorException("fail values type: " + value.getValue());
-                }
-                map.put(key, value);
+            if (value != null && value.getClass() != type.getClass()) {
+                throw new TypeErrorException("fail values type: " + value.getValue());
             }
         });
+    }
+
+    public Map<String, Type> createNewMap(Map<String, Type> values) {
+        Map<String, Type> map = getCopyFields();
+
+        values.entrySet().stream()
+                .filter(e -> e.getValue() != null)
+                .forEach(e -> map.put(e.getKey(), e.getValue()));
 
         return map;
     }

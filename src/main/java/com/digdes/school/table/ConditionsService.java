@@ -3,12 +3,13 @@ package com.digdes.school.table;
 import com.digdes.school.operator.logical.LogicalOperatorBase;
 import com.digdes.school.type.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class LogicalOperatorService {
+public class ConditionsService {
 
-    public static boolean isMatch(Row row, List<Object> conditions) {
+    public boolean isMatch(Row row, List<Object> conditions) {
         Stack<Object> stack = new Stack<>();
         boolean res;
 
@@ -57,8 +58,33 @@ public class LogicalOperatorService {
         return (boolean) obj;
     }
 
-    private static boolean isResult(Row row, Condition condition) {
+    private boolean isResult(Row row, Condition condition) {
         Type type = row.getCopyTypeByKey(condition.getKey());
         return condition.isMatch(type);
+    }
+
+    public List<Object> prepareConditions(List<Object> conditions) {
+        List<Object> result = new ArrayList<>();
+        Stack<LogicalOperatorBase> operatorStack = new Stack<>();
+
+        for (Object obj : conditions) {
+            if (obj instanceof Condition) {
+                result.add(obj);
+            } else if (obj instanceof LogicalOperatorBase) {
+                LogicalOperatorBase operator = (LogicalOperatorBase) obj;
+                while (!operatorStack.isEmpty() && operatorStack.peek().getPriority() >= operator.getPriority()) {
+                    result.add(operatorStack.pop());
+                }
+                operatorStack.addElement(operator);
+            } else {
+                throw new RuntimeException("prepare conditions fail object type");
+            }
+        }
+
+        while (!operatorStack.isEmpty()) {
+            result.add(operatorStack.pop());
+        }
+
+        return result;
     }
 }

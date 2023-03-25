@@ -1,7 +1,6 @@
 package com.digdes.school.type;
 
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.exceptions.TypeErrorException;
 
 import java.util.Objects;
 
@@ -19,6 +18,15 @@ public class DoubleType implements NumberType, Cloneable {
         } catch (NumberFormatException e) {
             throw new SyntaxErrorException("fail value to double: " + value);
         }
+    }
+
+    @Override
+    public int compareTo(NumberType type) {
+        Object typeObject = type.getValue();
+        if (typeObject instanceof Long) {
+            return value.compareTo((double) (long) type.getValue());
+        }
+        return value.compareTo((double) type.getValue());
     }
 
     @Override
@@ -42,20 +50,11 @@ public class DoubleType implements NumberType, Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DoubleType that = (DoubleType) o;
-        return Objects.equals(value, that.value);
+        return value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(value);
-    }
-
-    @Override
-    public int compareTo(NumberType type) {
-        Object typeObject = type.getValue();
-        if (typeObject instanceof Long) {
-            return value.compareTo((double) (long) type.getValue());
-        }
-        return value.compareTo((double) type.getValue());
     }
 }

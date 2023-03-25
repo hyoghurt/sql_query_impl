@@ -50,6 +50,23 @@ public class UpdateTest extends OperatorBase {
     }
 
     @Test
+    void update_null_test() {
+        List<Map<String, Object>> expected = list.stream()
+                .filter(map -> new GreaterFilter().filter(map, "id", 0L))
+                .peek(map -> map.put("age", null))
+                .peek(map -> map.remove("age"))
+                .collect(Collectors.toList());
+
+        String query = "UPDATE VALUES 'age'=null  WHERE 'id' > 0";
+        List<Map<String, Object>> actual = starter.execute(query);
+        assertEquals(expected, actual);
+
+        query = "SELECT";
+        List<Map<String, Object>> actualSelect = starter.execute(query);
+        assertEquals(list, actualSelect);
+    }
+
+    @Test
     void update_all_test() {
         List<Map<String, Object>> expected = list.stream()
                 .peek(map -> map.put("lastName", "default"))

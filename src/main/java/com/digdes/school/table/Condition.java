@@ -40,15 +40,7 @@ public class Condition {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public ComparisonOperatorInterface<Type, Type> getOperator() {
         return operator;
-    }
-
-    public void setOperator(ComparisonOperatorInterface<Type, Type> operator) {
-        this.operator = operator;
     }
 }

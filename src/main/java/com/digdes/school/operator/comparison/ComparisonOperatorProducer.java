@@ -1,7 +1,6 @@
 package com.digdes.school.operator.comparison;
 
 import com.digdes.school.exceptions.SyntaxErrorException;
-import com.digdes.school.operator.comparison.*;
 import com.digdes.school.type.Type;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class ComparisonOperatorProducer {
 
     public static ComparisonOperatorInterface<Type, Type> getOperator(String symbol) {
         return list.stream()
-                .filter(operator -> operator.getSymbol().equals(symbol))
+                .filter(operator -> operator.getSymbol().equals(symbol.toUpperCase()))
                 .findAny()
                 .orElseThrow(() -> new SyntaxErrorException("not found comparison operator"));
     }

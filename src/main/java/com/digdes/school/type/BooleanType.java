@@ -45,7 +45,7 @@ public class BooleanType implements Type, Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BooleanType that = (BooleanType) o;
-        return Objects.equals(value, that.value);
+        return value.equals(that.value);
     }
 
     @Override

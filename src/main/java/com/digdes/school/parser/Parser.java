@@ -42,9 +42,11 @@ public class Parser extends Constants {
         this.offset = 0;
 
         try {
+            //find statement
             String statement = skipSpaceDecorator(findStatement);
             this.statement = Statement.valueOf(statement.toUpperCase());
 
+            //find values or where
             if (offset < query.length()) {
                 String clause = skipSpaceDecorator(findStatement);
                 Clause clauseEnum = Clause.valueOf(clause.toUpperCase());
@@ -56,6 +58,7 @@ public class Parser extends Constants {
                 }
             }
 
+            //find where
             if (offset < query.length()) {
                 String clause = skipSpaceDecorator(findStatement);
                 Clause clauseEnum = Clause.valueOf(clause.toUpperCase());
@@ -98,29 +101,18 @@ public class Parser extends Constants {
 
     private void createConditions() {
         conditions = new ArrayList<>();
-        Stack<LogicalOperatorBase> stack = new Stack<>();
 
-        while (offset < query.length()) {
+        while (true) {
             Condition condition = findCondition();
             conditions.add(condition);
 
             if (offset < query.length()) {
                 String symbol = skipSpaceDecorator(findStatement);
                 LogicalOperatorBase operator = LogicalOperatorProducer.getOperator(symbol);
-
-                while (!stack.isEmpty() && stack.peek().getPriority() >= operator.getPriority()) {
-                    conditions.add(stack.pop());
-                }
-                stack.addElement(operator);
+                conditions.add(operator);
+            } else {
+                break;
             }
-        }
-
-        while (!stack.isEmpty()) {
-            conditions.add(stack.pop());
-        }
-
-        if (conditions.isEmpty()) {
-            throw new SyntaxErrorException(getExceptionMsg("values not found"));
         }
     }
 
@@ -128,7 +120,7 @@ public class Parser extends Constants {
         String key = getSubstringWithoutQuote(skipSpaceDecorator(findString));
         skipSpaceDecorator(findAssignment);
         String value = skipSpaceDecorator(findValue);
-        return new String[] {key.toUpperCase(), value};
+        return new String[]{key.toUpperCase(), value};
     }
 
     private Condition findCondition() {
@@ -162,11 +154,11 @@ public class Parser extends Constants {
 
     private void checkAndThrowException(int[] position) {
         if (position[0] == position[1]) {
-            throw new SyntaxErrorException(getExceptionMsg("error"));
+            throw new SyntaxErrorException(getExceptionMsg());
         }
     }
 
-    private String getExceptionMsg(String msg) {
-        return String.format("%s, position %d, query - %s", msg, offset, query);
+    private String getExceptionMsg() {
+        return String.format("error, position %d, query - %s", offset, query);
     }
 }

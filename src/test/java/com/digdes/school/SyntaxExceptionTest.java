@@ -66,6 +66,7 @@ public class SyntaxExceptionTest {
             "INSERT VALUES 'lastName'=test",
             "INSERT VALUES 'lastName'='test",
             "INSERT VALUES 'lastName'=test'",
+            "UPDATE VALUES 'lastName'=2",
 //            "INSERT VALUES 'lastName'=''keks'",
 //            "INSERT VALUES 'lastName'='keks''",
 
@@ -85,6 +86,7 @@ public class SyntaxExceptionTest {
             "INSERT VALUES 'cost'=3.4 2",
             "INSERT VALUES 'cost'=-.",
             "INSERT VALUES 'id'=-",
+            "UPDATE VALUES 'id'=2.2",
 
             //boolean
             "INSERT VALUES 'active'=",
@@ -93,6 +95,7 @@ public class SyntaxExceptionTest {
             "INSERT VALUES 'active'='true'",
             "INSERT VALUES 'active'=3",
             "INSERT VALUES 'active'=3.4",
+            "UPDATE VALUES 'active'='true'",
 
             //field name
             "INSERT VALUES ''lastName'='keks'",

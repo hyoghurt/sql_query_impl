@@ -33,7 +33,7 @@ class LikeILikeTest extends OperatorBase {
 
         //START
         Stream<Arguments> stream1 = Arrays.stream(startLike)
-                .map(v -> createParamStart("lastName", "LIKE", v))
+                .map(v -> createParamStart("lastName", "like", v))
                 .map(i -> Arguments.of(i[0], filter("lastName", i[1], new LikeStartFilter())));
 
         Stream<Arguments> stream2 = Arrays.stream(startLike)

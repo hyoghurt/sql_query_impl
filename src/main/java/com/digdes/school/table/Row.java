@@ -4,6 +4,7 @@ import com.digdes.school.exceptions.FieldNotFoundException;
 import com.digdes.school.type.Type;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Row {
@@ -23,18 +24,30 @@ public class Row {
         return map.get(key).clone();
     }
 
+    public void update(Map<String, Type> values) {
+        values.forEach((key, value) -> {
+                    if (!map.containsKey(key)) {
+                        throw new FieldNotFoundException(key);
+                    }
+                    map.put(key, value.clone());
+                });
+    }
+
     @Override
     public String toString() {
         return map.toString();
     }
 
-    public void update(Map<String, Type> values) {
-        values.forEach((key, value) -> {
-                    Type type = map.get(key);
-                    if (type == null) {
-                        throw new FieldNotFoundException(key);
-                    }
-                    map.put(key, value);
-                });
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Row row = (Row) o;
+        return map.equals(row.map);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(map);
     }
 }
