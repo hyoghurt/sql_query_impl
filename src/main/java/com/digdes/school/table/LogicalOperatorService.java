@@ -59,6 +59,6 @@ public class LogicalOperatorService {
 
     private static boolean isResult(Row row, Condition condition) {
         Type type = row.getCopyTypeByKey(condition.getKey());
-        return condition.isSatisfy(type);
+        return condition.isMatch(type);
     }
 }

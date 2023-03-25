@@ -16,9 +16,5 @@ public class NotEqual<T extends Type, U extends Type> extends ComparisonOperator
         }
         return !t.equals(u);
     }
-
-    @Override
-    public void validateType(T t, U u) {
-    }
 }
 

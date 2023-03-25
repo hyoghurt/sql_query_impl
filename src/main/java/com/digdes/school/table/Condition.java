@@ -11,12 +11,8 @@ public class Condition {
     private Type type;
     private ComparisonOperatorInterface<Type, Type> operator;
 
-    public boolean isSatisfy(Type type) {
+    public boolean isMatch(Type type) {
         return operator.test(type, this.type);
-    }
-
-    public void validateType(Type type) {
-        operator.validateType(this.type, type);
     }
 
     public void setOperatorSymbol(String symbol) {

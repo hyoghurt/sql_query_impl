@@ -16,9 +16,5 @@ public class Equal<T extends Type, U extends Type> extends ComparisonOperatorBas
         }
         return t.equals(u);
     }
-
-    @Override
-    public void validateType(T t, U u) {
-    }
 }
 

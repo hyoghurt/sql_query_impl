@@ -19,7 +19,7 @@ public class TableImpl implements Table {
     @Override
     public List<Map<String, Object>> insert(Map<String, Type> values) {
         Row row = new Row(newRowProducer.createNewMap(values));
-        rows.add(row);
+        this.rows.add(row);
         return createAnswer(Stream.of(row).collect(Collectors.toList()));
     }
 
@@ -60,7 +60,6 @@ public class TableImpl implements Table {
 
         if (conditions != null) {
             validateConditionType(conditions);
-
             Map<Boolean, List<Row>> collect = this.rows.stream()
                     .collect(Collectors
                             .partitioningBy(e -> LogicalOperatorService.isMatch(e, conditions)));
@@ -88,10 +87,14 @@ public class TableImpl implements Table {
                                 Map.Entry::getValue));
     }
 
+    //need throw exception if table rows is empty
     private void validateConditionType(List<Object> conditions) {
-//        conditions.forEach(condition -> {
-//            Type type = newRowProducer.getCopyFieldType(condition.getKey());
-//            condition.validateType(type);
-//        });
+        conditions.stream()
+                .filter(obj -> obj instanceof Condition)
+                .forEach(obj -> {
+                    Condition condition = (Condition) obj;
+                    Type type = newRowProducer.getCopyFieldType(condition.getKey());
+                    condition.isMatch(type);
+                });
     }
 }
